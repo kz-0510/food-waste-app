@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>食品ロス記録アプリ</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!--－戻るボタン-->
+    <a href="information.html">
+
+  <button class="backButton">
+    戻る
+  </button>
+  </a>
+
+
+  <h1>食品ロス記録</h1>
+
+  <p>商品名</p>
+  <input type="text" id="food">
+
+  <p>廃棄量</p>
+  <input type="number" id="waste">
+
+  <select id="unit">
+    <option>個</option>
+    <option>g</option>
+    <option>匹</option>
+  </select>
+
+  <p>廃棄理由</p>
+
+  <select id="reason">
+    <option>売れ残り</option>
+    <option>期限切れ</option>
+    <option>作りすぎ</option>
+    <option>ミス</option>
+  </select>
+
+  <br><br>
+
+  <button onclick="saveData()">
+    保存
+  </button>
+<!--空入力時のエラー-->
+  <p id="errorMessage"></p>
+
+  <hr>
+
+  <h2>履歴</h2>
+
+  <ul id="historyList"></ul>
+
+
+
+ 
+
+  <script>
+
+    // ページを開いた時に履歴表示
+    loadData();
+
+    function saveData() {
+
+      const food =
+        document.getElementById("food").value;
+
+      const waste =
+        document.getElementById("waste").value;
+
+      const unit =
+        document.getElementById("unit").value;
+
+      const reason =
+        document.getElementById("reason").value;
+
+
+       // 空入力防止
+  if(food === "" || waste === ""){
+
+    document.getElementById("errorMessage")
+    .textContent = "入力してください";
+
+
+    return;
+
+  }
+    
+
+      // 保存するデータ
+      const data = {
+
+        food: food,
+        waste: waste,
+        unit: unit,
+        reason: reason,
+        date: Date.now()
+      };
+
+      // localStorageから取得
+      const history =
+        JSON.parse(localStorage.getItem("history")) || [];
+
+      // 配列に追加
+      history.push(data);
+
+      // 保存
+      localStorage.setItem(
+        "history",
+        JSON.stringify(history)
+      );
+
+      // 画面に表示
+      displayData(data);
+ 
+ 
+      //入力後にフォームを空にする
+        document.getElementById("food").value = "";
+
+        document.getElementById("waste").value = "";
+
+    }
+
+    function displayData(data) {
+
+      const li =
+        document.createElement("li");
+
+      li.textContent =
+        data.date + " | " +
+        data.food + " | " +
+        "廃棄量:" +
+        data.waste +
+        data.unit + " | " +
+        data.reason;
+
+      // 削除ボタン
+      const deleteButton =
+        document.createElement("button");
+
+      deleteButton.textContent =
+        "削除";
+
+      deleteButton.className =
+        "deleteButton";
+
+      deleteButton.onclick =
+        function () {
+
+            // localStorage取得
+  let history =
+    JSON.parse(localStorage.getItem("history")) || [];
+
+  // 今のデータを除外
+  history = history.filter(function(item) {
+
+    return !(
+      item.food === data.food &&
+      item.waste === data.waste &&
+      item.date === data.date
+    );
+
+  });
+
+  // 保存し直す
+  localStorage.setItem(
+    "history",
+    JSON.stringify(history)
+  );
+
+
+          li.remove();
+
+        };
+
+      li.appendChild(deleteButton);
+
+      document.getElementById("historyList")
+        .appendChild(li);
+
+    }
+
+    function loadData() {
+
+      const history =
+        JSON.parse(localStorage.getItem("history")) || [];
+
+      history.forEach(function(data) {
+
+        displayData(data);
+
+      });
+
+    }
+
+  </script>
+
+</body>
+
+</html>

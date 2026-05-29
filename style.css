@@ -1,0 +1,201 @@
+@charset "utf-8";
+
+
+h1{
+
+    text-align: center;
+
+}
+
+h2{
+
+    border-left: 8px solid #4CAF50;
+
+    padding-left: 10px;
+
+    margin-bottom: 15px;
+
+}
+p{
+    color:black;
+
+    font-family: "Hiragino Sans";
+    font-size: 18px;
+    font-weight: 500;
+}
+
+input {
+    width: 250px;
+    padding: 10px;
+
+    border: 2px solid #ccc;
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    margin-bottom: 10px;
+}
+
+input:focus{
+
+    outline: none;
+
+    border: 2px solid #4CAF50;
+
+    box-shadow: 0 0 5px rgba(76,175,80,0.5);
+
+}
+
+
+    
+body{
+    
+    
+    
+    margin: 0;
+    padding: 20px;
+
+     background-color: #e8f5e9;
+}
+
+
+button{
+
+    width: 150px;
+    padding: 10px;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: rgb(44, 44, 44);
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+     transition: 0.2s;
+
+}
+button:hover{
+
+    opacity: 0.8;
+
+    transform: scale(1.03);
+
+}
+
+.deleteButton{
+
+    background-color: red;
+
+    width: 40px;
+
+    padding: 5px;
+
+    font-size: 12px;
+
+    margin-left: 50px;
+
+   
+}
+.backButton{
+
+    position: absolute;
+
+    top: 20px;
+
+    right: 20px;
+
+}
+/*ホームのドデカボタンのやつ*/
+
+.tabemono{width: 400px;
+
+    padding: 50px;
+
+    margin: 35px;
+
+    font-size: 35px;
+
+    font-weight: bold;
+
+    border-radius: 25px;
+
+    background-color: rgb(53, 53, 53);
+
+    color: rgb(255, 255, 255);
+
+    cursor: pointer;
+
+    transition: 0.6s;
+
+
+    
+}
+.tabemono:hover{background-color: rgba(50, 50, 50, 0.5);
+
+    transform: scale(1.05);}
+
+/*からにゅ力のやつ*/
+   #errorMessage{
+
+  color: red;
+
+  font-weight: bold;
+
+}
+/*履歴のところにスペース*/
+
+li{
+
+  margin-bottom: 12px;
+
+  background-color: white;
+
+  padding: 15px;
+
+  border-radius: 12px;
+
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  
+ transition: 0.2s;
+
+}
+
+li:hover{
+
+  transform: translateY(-3px);
+ box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+
+
+.summaryContainer{
+
+    display: flex;
+
+    gap: 50px;
+
+    align-items: flex-start;
+
+    /*スマホ対応*/
+     flex-wrap: wrap;
+
+}
+
+
+.summaryBox{
+
+    background-color: white;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+   flex: 1;
+
+   min-width: 250px;
+}

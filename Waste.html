@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>廃棄記録一覧</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+  <a href="information.html">
+
+    <button class="backButton">
+      戻る
+    </button>
+
+  </a>
+
+
+  <h1>廃棄記録一覧</h1>
+
+  <div class="tabButtons">
+
+<button onclick="showSection('history')">
+  廃棄履歴
+</button>
+
+<button onclick="showSection('food')">
+  食品別合計
+</button>
+
+<button onclick="showSection('reason')">
+  理由ランキング
+</button>
+</div>
+
+<div class="topBox">
+
+
+
+  <!-- 今月の合計 -->
+  <h2 id="totalWaste">
+    今週の廃棄量：0
+  </h2>
+<hr>
+  <!-- 件数 -->
+  <h2 id="recordCount">
+   今週の記録件数：0
+  </h2>
+
+</div>
+ 
+<hr>
+<div class="summaryContainer">
+
+  <div id="foodsection" class="summaryBox">
+
+    <h2>食品別合計</h2>
+
+    <button id="showFoodButton">
+      すべて表示
+    </button>
+    
+    <ul id="foodTotalList"></ul>
+
+  </div>
+
+
+  <div id="reasonsection" class="summaryBox">
+
+    <h2>廃棄理由ランキング</h2>
+
+    <ul id="reasonList"></ul>
+
+  </div>
+
+</div>
+
+
+
+
+<div id="historysection">
+  <!-- 一覧 -->
+   <h2>廃棄履歴</h2>
+  <ul id="historyList"></ul>
+  
+  <button id="showMoreButton">
+  すべての履歴を確認
+</button>
+  
+</div>
+<hr>
+
+
+
+
+  <script>
+
+    window.onload = function(){
+
+  loadData();
+
+  showSection("history");
+
+};
+
+    function loadData() {
+
+      const history =
+
+        JSON.parse(
+          localStorage.getItem("history")
+        ) || [];
+
+        history.sort(function(a, b){
+
+          return new Date(b.date) - new Date(a.date);
+
+        });
+
+
+         const now = Date.now();
+
+         const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+ 
+        
+      const historyList =
+        document.getElementById("historyList");
+
+        const foodTotalList =
+        document.getElementById("foodTotalList");
+
+        const reasonList =
+        document.getElementById("reasonList");
+
+        const totalWasteText =
+        document.getElementById("totalWaste");
+
+        const recordCountText =
+        document.getElementById("recordCount");
+
+        historyList.innerHTML = "";
+
+        foodTotalList.innerHTML = "";
+
+        reasonList.innerHTML = "";
+
+    
+     
+        let recordCount = 0;
+
+        const totals = {
+
+            "個": 0,
+            "g": 0,
+            "匹": 0
+        };
+
+        const foodTotals = {}; 
+
+        const reasonsTotals = {};
+
+        const oneWeekHistory = history.filter(function(data){
+
+          return now - new Date(data.date) <= oneWeek;
+        });
+        
+        const displayHistory = showAllHistory
+
+        ? oneWeekHistory
+
+        : oneWeekHistory.slice(0,5);
+        
+        
+        oneWeekHistory.forEach(function(data){
+
+         //一週間以内だけ
+         if(now - new Date(data.date) <= oneWeek){
+
+            recordCount++;
+          }
+        
+       
+        totals[data.unit] +=
+
+        Number(data.waste);
+
+        
+         const key =
+            data.food + "_" + data.unit;
+
+
+          // 初回なら0作る
+          if(!foodTotals[key]){
+
+            foodTotals[key] = 0;
+
+          }
+
+
+          // 加算
+          foodTotals[key] +=
+            Number(data.waste);
+
+//合計廃棄理由
+            
+            if(!reasonsTotals[data.reason]){
+                reasonsTotals[data.reason] = 0;
+            }
+
+            reasonsTotals[data.reason]++;
+            
+           //表示するやつ
+            if(
+            showAllHistory ||
+            historyList.children.length < 5  ){
+            showHistory(data, historyList);
+          }
+            
+           
+        }
+      
+    );
+
+    
+      //食品別合計
+            showFoodTotals(foodTotals, foodTotalList);
+
+          //廃棄理由ランキング
+            showReasonRanking(reasonsTotals,reasonList);
+
+      // 今週の廃棄量
+    
+      totalWasteText.textContent =
+      
+
+      "個：" + totals["個"] + "個 / " +
+      "g：" + totals["g"] + "g / " +
+      "匹：" + totals["匹"] + "匹";
+      
+      
+      // 件数
+      recordCountText.textContent =
+
+        "今週の記録件数：" + recordCount;
+
+
+    
+       
+
+}//ここまでloadData
+    
+document
+.getElementById("showMoreButton")
+
+.onclick = function(){
+
+  showAllHistory = true;
+
+  loadData();
+
+};
+
+//廃棄理由ランキング
+function showReasonRanking( reasonsTotals,reasonList){
+
+        for(let reason in reasonsTotals){
+
+          
+          
+            const li =
+
+            document.createElement("li");
+
+            li.textContent =
+
+            reason + " : "
+
+            + reasonsTotals[reason]
+
+            + "件";
+
+            reasonList.appendChild(li);
+
+        }
+
+    }
+
+    
+//表示するやつ
+    function showHistory(data, historyList){
+
+  const li =
+    document.createElement("li");
+
+
+  li.textContent =
+
+    new Date(data.date).toLocaleDateString()
+
+    + " | " +
+
+    data.food + " | " +
+
+    "廃棄量:" +
+
+    data.waste +
+
+    data.unit + " | " +
+
+    data.reason;
+
+  historyList.appendChild(li);
+    }
+
+
+    //すべて表示ボタン
+    let showAllHistory = false;
+
+    let showAllFood = false;
+
+    
+
+
+
+//食品別合計
+ function showFoodTotals(foodTotals, foodTotalList){
+
+  const foodKeys =
+  Object.keys(foodTotals);
+
+  const displayFood =
+  showAllFood
+
+  ? foodKeys
+
+  : foodKeys.slice(0,5);
+
+  displayFood.forEach(function(key){
+
+  const li =
+    document.createElement("li");
+
+    const splitKey = key.split("_");
+
+    const foodName = splitKey[0];
+
+    const unit = splitKey[1];
+
+    
+  li.textContent =
+
+    foodName +  "合計 "
+
+  + foodTotals[key]
+
+  + unit;
+
+foodTotalList.appendChild(li);
+});
+ }
+
+document
+.getElementById("showFoodButton")
+.onclick = function(){
+
+  showAllFood = true;
+
+  loadData();
+
+};
+
+
+
+//ボタンたち
+function showSection(section){
+  document.getElementById("historysection")
+  .style.display ="none";
+
+  document.getElementById("foodsection")
+  .style.display ="none";
+
+  document.getElementById("reasonsection")
+  .style.display ="none";
+
+  if(section === "history"){
+    document.getElementById("historysection")
+  .style.display ="block";
+  }
+  
+if(section === "food"){
+    document.getElementById("foodsection")
+  .style.display ="block";
+
+}
+if(section === "reason"){
+    document.getElementById("reasonsection")
+  .style.display ="block";
+}
+
+}
+  </script>
+
+</body>
+
+</html>

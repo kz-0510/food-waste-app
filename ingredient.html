@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+  <title><材料入力フォーム></title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+ 
+  <!--戻るボタン-->
+  <a href="information.html">
+
+  <button class="backButton">
+    戻る
+  </button>
+  </a>
+    
+  <h1>材料登録</h1>
+
+    <p>食材名</p>
+    <input type="text" id="food">
+
+    <p>廃棄日数</p>
+    <input type="text" id="prep">
+   
+   <select id="unit"> 
+        <option>時間</option>
+        <option>日</option>
+        <option>週</option>
+
+   
+    </select>
+  
+    <br><br>
+
+    <button onclick="saveFood()">
+        保存
+    </button>
+
+    <hr>
+
+    <h2>登録済み材料</h2>
+
+    <ul id="foodList"></ul>
+    
+    <script>
+
+    function saveFood(){
+
+      const food =
+      document.getElementById("food").value;
+
+      const prep =
+      document.getElementById("prep").value;
+
+      
+        const unit =
+      document.getElementById("unit").value;
+      
+
+      const li =
+      document.createElement("li");
+
+      li.textContent =
+      food + " " + prep + unit ;
+
+      
+//ほぞんするところ
+       localStorage.setItem("food", food);
+       document.getElementById("foodList")
+.appendChild(li);
+
+
+const savedFood =
+localStorage.getItem("food");
+
+console.log(savedFood);
+
+//ここまで」
+
+      const deleteButton =
+      document.createElement("button");
+
+      deleteButton.textContent = "削除";
+
+      deleteButton.className = "deleteButton";
+
+      deleteButton.onclick = function(){
+        li.remove();
+      }
+    li.appendChild(deleteButton);
+    }
+
+
+
+
+  </script>
+
+</body>
+
+</html>
